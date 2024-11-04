@@ -21,7 +21,7 @@ function Callback() {
             },
             body: new URLSearchParams({
                 grant_type: "authorization_code",
-                redirect_uri: "http://localhost:5173/callback",
+                redirect_uri: "https://spotify-ai.onrender.com/callback",
                 code: code,
                 client_id:  CLIENT_ID,
                 client_secret: CLIENT_SECRET,
@@ -37,7 +37,7 @@ function Callback() {
             if (accessToken) {
                 window.localStorage.setItem("accessToken", accessToken);
                 window.localStorage.setItem("refreshToken", data.refresh_token);
-                window.location.href = "http://localhost:5173/main";
+                window.location.href = "https://spotify-ai.onrender.com/main";
             }
         })
         // Utiliza el token de acceso para realizar solicitudes autenticadas a la API de Spotify

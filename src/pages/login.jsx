@@ -4,7 +4,7 @@ import { CLIENT_ID } from '../config';
 
 function Login() {
   const [clientId, setClientId] = useState(CLIENT_ID);
-  const [redirectUri, setRedirectUri] = useState('http://localhost:5173/callback');
+  const [redirectUri, setRedirectUri] = useState('https://spotify-ai.onrender.com/callback');
 
   const handleLogin = () => {
     const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=code&redirect_uri=${redirectUri}&scope=user-read-private%20user-read-email%20user-top-read%20playlist-read-private%20playlist-modify-public%20playlist-modify-private%20user-follow-read%20user-library-read%20streaming`;
