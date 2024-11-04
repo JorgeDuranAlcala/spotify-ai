@@ -7,6 +7,7 @@ import useYtbMusic from "../hooks/useYtbMusic";
 import YouTube from 'react-youtube';
 import Slider from '@mui/material/Slider';
 import { Spinner } from "../components/Spiner";
+import { DOMAIN_URI } from '../config'
 
 const opts = {
   height: '1',
@@ -71,6 +72,7 @@ function Main() {
   const [videoId, setVideoId] = useState(null);
   const [activeTab, setActiveTab] = useState('mood'); // Add this near other state declarations
   const [artist, setArtist] = useState(''); // Add this near other state declarations
+  console.log('d', DOMAIN_URI)
   
   const playerRef = useRef(null);
   const intervalRef = useRef(null);

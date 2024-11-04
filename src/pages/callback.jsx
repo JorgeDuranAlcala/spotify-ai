@@ -1,7 +1,7 @@
 // src/components/Callback.jsx
 import React, { useEffect } from 'react';
 import axios from 'axios';
-import { CLIENT_ID, CLIENT_SECRET } from '../config';
+import { CLIENT_ID, CLIENT_SECRET, DOMAIN_URI } from '../config';
 
 function Callback() {
   useEffect(() => {
@@ -21,7 +21,7 @@ function Callback() {
             },
             body: new URLSearchParams({
                 grant_type: "authorization_code",
-                redirect_uri: "https://spotify-ai-nine.vercel.app/callback",
+                redirect_uri: `${DOMAIN_URI}/callback`,
                 code: code,
                 client_id:  CLIENT_ID,
                 client_secret: CLIENT_SECRET,
@@ -37,7 +37,7 @@ function Callback() {
             if (accessToken) {
                 window.localStorage.setItem("accessToken", accessToken);
                 window.localStorage.setItem("refreshToken", data.refresh_token);
-                window.location.href = "https://spotify-ai-nine.vercel.app/main";
+                window.location.href = `${DOMAIN_URI}/main`;
             }
         })
         // Utiliza el token de acceso para realizar solicitudes autenticadas a la API de Spotify
