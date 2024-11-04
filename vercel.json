@@ -1,6 +1,9 @@
 {
     "version": 2,
     "routes": [
-      { "src": "/(.*)", "dest": "/index.html" }
+      {
+        "src": "/((?!api|_next/static|favicon.ico).*)",
+        "dest": "/index.html"
+      }
     ]
   }
