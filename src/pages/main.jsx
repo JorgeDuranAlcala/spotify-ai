@@ -7,7 +7,7 @@ import useYtbMusic from "../hooks/useYtbMusic";
 import YouTube from 'react-youtube';
 import Slider from '@mui/material/Slider';
 import { Spinner } from "../components/Spiner";
-import { DOMAIN_URI } from '../config'
+import { BACKEND_URI, DOMAIN_URI } from '../config'
 
 const opts = {
   height: '1',
@@ -149,7 +149,7 @@ useEffect(() => {
       setPlaylistTracks([]);
       setIsLoading(true);
       const response = await axios.post(
-        `https://api-spotify-ai.onrender.com/generate-playlist`,
+        `${BACKEND_URI}/generate-playlist`,
         { 
           mood: activeTab === 'mood' ? mood : undefined,
           artist: activeTab === 'artist' ? artist : undefined,
@@ -179,7 +179,7 @@ useEffect(() => {
   const handleSavePlaylist = async () => {
     try {
       const trackUris = playlistTracks.map((track) => track.uri);
-      const { data } = await axios.post(`https://api-spotify-ai.onrender.com/playlist/save`, {
+      const { data } = await axios.post(`${BACKEND_URI}/playlist/save`, {
         songTypes,
         accessToken,
         trackUris,

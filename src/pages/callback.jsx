@@ -2,16 +2,30 @@
 import React, { useEffect } from 'react';
 import axios from 'axios';
 import { CLIENT_ID, CLIENT_SECRET, DOMAIN_URI } from '../config';
+import { useNavigate } from 'react-router-dom';
 
 function Callback() {
+  const navigate = useNavigate();
+
   useEffect(() => {
     const qString = window.location.search;
     const urlSearch = new URLSearchParams(qString);
     const code = urlSearch.get("code");
-
+    const accessToken = urlSearch.get("access_token");
+    const refresh_token = urlSearch.get("refresh_token");
+    console.log({
+      code,
+      accessToken,
+      refresh_token,
+    })
     const getToken = async () => {
       try {
-        const authParams = {
+        if (accessToken) {
+          window.localStorage.setItem("accessToken", accessToken);
+          window.localStorage.setItem("refreshToken", refresh_token);
+          navigate("/main")
+        }
+/*         const authParams = {
             method: "POST",
             headers: {
               "Content-Type": "application/x-www-form-urlencoded",
@@ -21,7 +35,7 @@ function Callback() {
             },
             body: new URLSearchParams({
                 grant_type: "authorization_code",
-                redirect_uri: `${DOMAIN_URI}/callback`,
+                redirect_uri: `http://localhost:5173/callback`,
                 code: code,
                 client_id:  CLIENT_ID,
                 client_secret: CLIENT_SECRET,
@@ -39,7 +53,15 @@ function Callback() {
                 window.localStorage.setItem("refreshToken", data.refresh_token);
                 window.location.href = `${DOMAIN_URI}/main`;
             }
+        }) */
+/*        axios.get('http://localhost:3000/callback?code=' + code)
+       .then(response => {
+          console.log(response.data);
+          //window.location.href = `${DOMAIN_URI}/main`;
         })
+        .catch(error => {
+          console.error('Error al obtener el token de acceso:', error);
+        }); */
         // Utiliza el token de acceso para realizar solicitudes autenticadas a la API de Spotify
       } catch (error) {
         console.error('Error al obtener el token de acceso:', error);

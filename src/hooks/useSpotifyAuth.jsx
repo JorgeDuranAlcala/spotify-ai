@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { CLIENT_ID } from '../config';
+import { BACKEND_URI, CLIENT_ID } from '../config';
 import axios from 'axios';
 
 const useSpotifyAuth = () => {
@@ -16,7 +16,7 @@ const useSpotifyAuth = () => {
 
     // refresh token that has been previously stored
     const refreshToken = localStorage.getItem('refreshToken');
-    axios.get(`https://api-spotify-ai.onrender.com/${refreshToken}/refresh`)
+    axios.get(`${BACKEND_URI}/${refreshToken}/refresh`)
       .then((response) => {
         console.log('obtenido', response.data)
         const res = {

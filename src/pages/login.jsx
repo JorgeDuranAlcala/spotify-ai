@@ -1,14 +1,14 @@
 // src/components/Login.jsx
 import React, { useState } from 'react';
-import { CLIENT_ID, DOMAIN_URI } from '../config';
+import { BACKEND_URI, CLIENT_ID, DOMAIN_URI } from '../config';
 
 function Login() {
   const [clientId, setClientId] = useState(CLIENT_ID);
-  const [redirectUri, setRedirectUri] = useState(`${DOMAIN_URI}/callback`);
+  const [redirectUri, setRedirectUri] = useState(`http://localhost:5173/callback`);
 
   const handleLogin = () => {
-    const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=code&redirect_uri=${redirectUri}&scope=user-read-private%20user-read-email%20user-top-read%20playlist-read-private%20playlist-modify-public%20playlist-modify-private%20user-follow-read%20user-library-read%20streaming`;
-    window.location.href = authUrl;
+    //const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=code&redirect_uri=${redirectUri}&scope=user-read-private%20user-read-email%20user-top-read%20playlist-read-private%20playlist-modify-public%20playlist-modify-private%20user-follow-read%20user-library-read%20streaming`;
+    window.location.href = `${BACKEND_URI}/login`;
   };
 
   return (
