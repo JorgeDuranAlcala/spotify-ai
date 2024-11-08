@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { BACKEND_URI } from './src/config'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -8,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/callback': {
-        target: BACKEND_URI, // Replace with your actual OAuth provider URL
+        target: 'https://api-spotify-ai.onrender.com', // Replace with your actual OAuth provider URL
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/callback/, '')
       },
