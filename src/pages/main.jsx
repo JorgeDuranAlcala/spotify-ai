@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Box from "../components/Box";
 import useSpotifyAuth from "../hooks/useSpotifyAuth";
 import { toast } from "react-toastify";
@@ -8,6 +8,9 @@ import YouTube from 'react-youtube';
 import Slider from '@mui/material/Slider';
 import { Spinner } from "../components/Spiner";
 import { BACKEND_URI, DOMAIN_URI } from '../config'
+import { FaPlay } from "react-icons/fa6";
+import { FaPause } from "react-icons/fa";
+import { MdOutlineReplay } from "react-icons/md";
 
 const opts = {
   height: '1',
@@ -71,14 +74,13 @@ function Main() {
   const { searchYtbMusic, loading } = useYtbMusic();
   const [videoId, setVideoId] = useState(null);
   const [activeTab, setActiveTab] = useState('mood'); // Add this near other state declarations
-  const [artist, setArtist] = useState(''); // Add this near other state declarations
-  console.log('d', DOMAIN_URI)
-  
+  const [artist, setArtist] = useState(''); // Add this near other state declarations  
   const playerRef = useRef(null);
   const intervalRef = useRef(null);
 
   const [currentTrack, setCurrentTrack] = useState(null);
   const [isVideoReady, setIsVideoReady] = useState(false);
+
 
   const onReady = (event) => {
     playerRef.current = event.target;
@@ -88,6 +90,7 @@ function Main() {
   
   // Add these control functions
   const playVideo = () => {
+    console.log("Playing video", playerRef.current);
     playerRef.current?.playVideo();
   };
   
@@ -97,6 +100,7 @@ function Main() {
   
   const stopVideo = () => {
     playerRef.current?.stopVideo();
+    playerRef.current?.playVideo();
   };
 
   const handleSliderChange = (event, newValue) => {
@@ -225,8 +229,19 @@ useEffect(() => {
     setArtist(e.target.value);
   };
 
+  const togglePlayPause = () => {
+    if (playerRef.current) {
+      const playerState = playerRef.current.getPlayerState();
+      if (playerState === 1) { // 1 means playing
+        playerRef.current.pauseVideo();
+      } else {
+        playerRef.current.playVideo();
+      }
+    }
+  };
+
   return (
-    <div className="flex flex-col gap-2 p-4 w-full h-full bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 animate-gradient-xy">
+    <div className="flex flex-col gap-2 pb-[5rem] p-4 w-full h-full bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 animate-gradient-xy">
       
       <div className="flex flex-col items-center gap-4 mb-6">
         <div className="inline-flex rounded-lg bg-black/30 p-1">
@@ -259,12 +274,22 @@ useEffect(() => {
 {       activeTab === 'mood' ? (<input
               onChange={handleMoodChange}
               value={mood}
+              onKeyDown={e => {
+                if (e.key === 'Enter') {
+                  handleGenerateClick();
+                }
+              }}
               className="flex w-full p-2 rounded-lg bg-transparent focus:outline-none text-white"
               type="text"
               placeholder="Type in your mood..."
             />) : (
               <input
                 onChange={handleArtistChange}
+                onKeyDown={e => {
+                  if (e.key === 'Enter') {
+                    handleGenerateClick();
+                  }
+                }}
                 value={artist}
                 className="flex w-full p-2 rounded-lg bg-transparent focus:outline-none text-white"
                 type="text"
@@ -315,35 +340,64 @@ useEffect(() => {
         </div>
         <div style={{ flex: 0.8, display: 'flex', gap: 20 }}>
             <div className="flex w-full gap-2 items-center justify-center">
+            
+
               {videoId &&  <YouTube 
                 videoId={videoId}
                 opts={opts} 
                 onReady={onReady}
               />}
-            <Slider
+              <Slider
                 value={progress}
                 onChange={handleSliderChange}
                 aria-labelledby="continuous-slider"
-                style={{ marginTop: '10px' }}
-            />
-            <div className="flex gap-2 mx-4">
+                sx={{
+                  width: '100%',
+                  color: '#8b5cf6',
+                  '& .MuiSlider-thumb': {
+                    width: 12,
+                    height: 12,
+                    transition: '0.3s cubic-bezier(.47,1.64,.41,.8)',
+                    '&:hover': {
+                      boxShadow: '0 0 0 8px rgba(139, 92, 246, 0.16)',
+                      width: 16,
+                      height: 16,
+                    },
+                  },
+                  '& .MuiSlider-rail': {
+                    opacity: 0.28,
+                  },
+                  '& .MuiSlider-track': {
+                    background: 'linear-gradient(90deg, #FF0080, #FF8C00, #40E0D0, #6366f1, #8b5cf6)',
+                    border: 'none',
+                    backgroundSize: '200% 100%',
+                    animation: 'gradient 15s ease infinite',
+                  },
+                  '@keyframes gradient': {
+                    '0%': {
+                      backgroundPosition: '0% 50%',
+                    },
+                    '50%': {
+                      backgroundPosition: '100% 50%',
+                    },
+                    '100%': {
+                      backgroundPosition: '0% 50%',
+                    },
+                  },
+                }}
+              />            <div className="flex gap-2 mx-4">
                 <button 
                   className="bg-blue-500 text-white p-2 px-3 rounded-full transform hover:scale-110 transition-all duration-300 hover:bg-blue-600 hover:shadow-lg hover:shadow-blue-500/50"
-                  onClick={playVideo}
+                  onClick={togglePlayPause}
                 >
-                  ▶ 
+                  {playerRef.current?.getPlayerState() === 1 ? <FaPause/> : <FaPlay/>}
                 </button>
-                <button 
-                  className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-700 transform hover:scale-110 transition-all duration-300 hover:bg-blue-600 hover:shadow-lg hover:shadow-blue-500/50"
-                  onClick={pauseVideo}
-                >
-                  ⏸
-                </button>
+
                 <button 
                   className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-700 transform hover:scale-110 transition-all duration-300 hover:bg-blue-600 hover:shadow-lg hover:shadow-blue-500/50"
                   onClick={stopVideo}
                 >
-                  ⏹
+                  <MdOutlineReplay />
                 </button>
             </div>
           </div>
@@ -404,7 +458,7 @@ useEffect(() => {
             </div>
           ))}
         </div>
-      </div>
+      {/* </div>
       <div
         style={{
           position: "fixed",
@@ -437,7 +491,7 @@ useEffect(() => {
               </Box>
             ))}
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

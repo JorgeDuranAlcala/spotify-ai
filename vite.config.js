@@ -6,11 +6,6 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/callback': {
-        target: 'https://api-spotify-ai.onrender.com', // Replace with your actual OAuth provider URL
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/callback/, '')
-      },
       '/yt-music': {
         target: 'https://music.youtube.com',
         changeOrigin: true,
